@@ -3,26 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Website</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Shrey - Portfolio</title>
+        <meta property="og:title" content="Alex Developer - Portfolio">
+        <meta property="og:description" content="Web Developer & Designer showcasing creative projects and skills">
+        <meta property="og:image" content="https://example.com/path/to/your/profile-image.jpg">
+        <meta property="og:url" content="https://example.com/your-portfolio-url">
+        <meta name="twitter:card" content="summary_large_image">
+        <style>
+            #container {
+                display: flex;
+                align-items: center;
+                gap: 75px; /* Adjust the space between button and image */
+            }
+
+            body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #randomImageBtn, #followBtn {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        #imageContainer {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #emoji-follower {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+            </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Welcome to My Website</h1>
-        </header>
-        <main>
-            <section class="profile">
-                <img src="avatar.jpg" alt="My profile picture" class="profile-pic">
-                <article class="bio">
-                    <h2>About Me</h2>
-                    <p>Hello! I'm a web developer passionate about creating responsive and accessible websites. When I'm not coding, you can find me hiking in the mountains or experimenting with new recipes in the kitchen.</p>
-                </article>
-            </section>
-        </main>
-        <footer>
-            <p>&copy; 2025 My Personal Website</p>
-        </footer>
+    <header>
+        <h1>Shrey Developer</h1>
+        <p>Web Developer & Designer</p>
+    </header>
+
+    <main class="container">
+        <section class="profile">
+            <img src="hero.png" alt="Shrey Verma Developer">
+            <h2>Shrey Developer</h2>
+            <p>Web Developer based in New York</p>
+        </section>
+
+        <section class="bio">
+            <h2>About Me</h2>
+            <p>Hi, I'm Shrey! I'm a passionate web developer with 1+ years of experience in creating responsive and user-friendly websites. I specialize in HTML, CSS, and JavaScript, and I'm always eager to learn new technologies.</p>
+        </section>
+
+        <section class="projects">
+            <h2>My Projects</h2>
+            <details>
+                <summary>E-commerce Website</summary>
+                <p>Developed a fully functional e-commerce platform using React and Node.js.</p>
+            </details>
+            <details>
+                <summary>Weather App</summary>
+                <p>Created a weather application that provides real-time weather data using a third-party API.</p>
+            </details>
+            <details>
+                <summary>Portfolio Website</summary>
+                <p>Designed and developed this portfolio website using HTML, CSS, and JavaScript.</p>
+            </details>
+        </section>
+    </main>
+    <h1>Metropolitan Museum of Art - Random Image</h1>
+    <div style="max-width: 500px; max-height: 500px;">
+    
+    <div id="container">
+    <button id="randomImageBtn">Get Random Image</button>
+    <div id="imageContainer"></div>
+</div>
     </div>
+    <div id="interactive-area">
+        <div id="emoji-follower">🎨</div>
+    </div>
+    <button id="followBtn">Follow</button>
+    
+    </div>
+    
+<script>
+       const randomImageBtn = document.getElementById('randomImageBtn');
+        const imageContainer = document.getElementById('imageContainer');
+        const emojiFollower = document.getElementById('emoji-follower');
+        const followBtn = document.getElementById('followBtn');
+        let isFollowing = false;
+
+        randomImageBtn.addEventListener('click', getRandomImage);
+
+        async function getRandomImage() {
+            try {
+                const response = await fetch('https://collectionapi.metmuseum.org/public/collection/v1/objects');
+                const data = await response.json();
+                const objectIDs = data.objectIDs;
+                const randomID = objectIDs[Math.floor(Math.random() * objectIDs.length)];
+                const objectResponse = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${randomID}`);
+                const objectData = await objectResponse.json();
+
+                if (objectData.primaryImage) {
+                    const img = document.createElement('img');
+                    img.src = objectData.primaryImage;
+                    img.alt = objectData.title;
+                    img.style.maxWidth = '100%';
+                    imageContainer.innerHTML = '';
+                    imageContainer.appendChild(img);
+                } else {
+                    imageContainer.innerHTML = 'No image available for this object. Try again!';
+                }
+            } catch (error) {
+                console.error('Error fetching image:', error);
+                imageContainer.innerHTML = 'Error fetching image. Please try again.';
+            }
+        }
+
+        function updateEmojiPosition(e) {
+            emojiFollower.style.left = `${e.clientX}px`;
+            emojiFollower.style.top = `${e.clientY}px`;
+        }
+
+        followBtn.addEventListener('click', () => {
+            isFollowing = !isFollowing;
+            if (isFollowing) {
+                emojiFollower.style.display = 'block';
+                document.addEventListener('mousemove', updateEmojiPosition);
+                followBtn.textContent = 'Stop Following';
+            } else {
+                emojiFollower.style.display = 'none';
+                document.removeEventListener('mousemove', updateEmojiPosition);
+                followBtn.textContent = 'Follow';
+            }
+        });
+   
+</script>
 </body>
 </html>
